@@ -1,0 +1,28 @@
+# Environment Requirements YAML
+
+# Name of the environment
+name: NLBN_env
+
+# Description of the environment
+description: Environment for my implementation of uncertainty quantification using Dropout Ensemble Technique and Rejection Confidence Variance
+
+# List of required packages and versions
+packages:
+  - name: torch
+    version: 2.0.1
+
+  - name: torchvision
+    version: 0.15.2
+
+  - name: datetime
+    version: 5.3
+
+# Optional sections:
+# - OS specifications
+# - Python version
+# - Additional configurations
+
+# Python version
+python:
+  version: 3.9.16
+
