@@ -2,9 +2,8 @@ import sys
 import torch
 
 from torchvision import transforms, datasets
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import random_split
 from model import ImageClassificationModel
-from model_wrapper import ModelWrapper
 from NLBN import NLBN
 from uncertainty_quantification import calculate_rejection_confidence_variance as calc_rcv
 
@@ -31,7 +30,6 @@ if __name__ == "__main__":
     trained_model = ImageClassificationModel()
     trained_model.load_state_dict(torch.load(model_path))
     loss_fn = torch.nn.CrossEntropyLoss()
-    #optimizer = torch.optim.Adam(params=trained_model.parameters(), lr=0.001, weight_decay=0.0001)
     optimizer = None
     model_save_dir = "./models/EuroSAT_CrossEntropy_Adam_4_Blocks/"
 

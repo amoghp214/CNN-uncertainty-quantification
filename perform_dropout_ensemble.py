@@ -2,10 +2,8 @@ import sys
 import torch
 
 from torchvision import transforms, datasets
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import random_split
 from model import ImageClassificationModel
-from model_wrapper import ModelWrapper
-from NLBN import NLBN
 from uncertainty_quantification import calculate_dropout_ensemble_uncertainty as calc_deu
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@ import datetime
 import torch
 from torch.utils.data import DataLoader
 
-#from torch.utils.tensorboard import SummaryWriter
 
 class ModelWrapper():
     def __init__(self, train_data, test_data, model, loss_fn, optimizer, model_save_dir):
@@ -35,7 +34,6 @@ class ModelWrapper():
             self.optimizer.step()
             
             curr_loss += loss.item()
-            #print(curr_loss)
 
             if i % 1000 == 999:
                 last_loss = curr_loss / 1000 # loss per batch

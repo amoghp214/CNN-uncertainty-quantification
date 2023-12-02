@@ -18,7 +18,6 @@ class NLBN():
         self.train_dataloader = DataLoader(self.train_set, batch_size=len(train_set), shuffle=True)
         self.test_dataloader = DataLoader(self.test_set, batch_size=len(test_set), shuffle=True)
 
-        #self.rejection_layers = {}
         self.r_models = {}
         self.r_train_datasets = {}
         self.r_test_datasets = {}
@@ -92,15 +91,12 @@ class NLBN():
             self.optimizer.zero_grad()
 
             y_h = r_model(x)
-            #print("found predictions")
             loss = self.loss_fn(y_h, y)
-            #print("found loss")
             loss.backward(retain_graph=True)
             #loss.backward()
             self.optimizer.step()
             
             curr_loss += loss.item()
-            #print(curr_loss)
 
             if i % 1000 == 999:
                 last_loss = curr_loss / 1000 # loss per batch
@@ -124,24 +120,10 @@ class NLBN():
         for i, param in enumerate(self.model.parameters()):
 
             if (len(param.size()) > 1):
-                #self.rejection_layers["r_layer_" + i] = []
-                layers = []
-                #fc_inp_size = 1
-
-                if (len(param.size()) > 2):
-                    
-                    layers.append(torch.nn.Flatten())
-                    
-                    #self.rejection_layers["r_layer_" + i].append(torch.nn.Flatten())
-                    #fc_inp_size = param.size()[0] * param.size()[1] * param.size()[2]
-
-                #fc_inp_size = fc_inp_size * param.size()[-1]
-                #layers.append(torch.nn.Linear(in_features=fc_inp_size, out_features=10))
-                layers.append(torch.nn.Linear(in_features=self.r_input_sizes[i], out_features=10))
-                #layers.append(torch.nn.Tanh())
-                #self.rejection_layers["r_layer_" + i].append(torch.nn.Linear(in_features=fc_inp_size, out_features=10))
-                
-                #self.r_models[i] = RejectionLayerModel(layers)
+                #layers = []
+                #if (len(param.size()) > 2):
+                #    layers.append(torch.nn.Flatten())
+                #layers.append(torch.nn.Linear(in_features=self.r_input_sizes[i], out_features=10))
                 self.r_models[i] = RejectionLayerModel(self.r_input_sizes[i])
                 print(i)
     
@@ -162,7 +144,6 @@ class NLBN():
         print(type(y_train))
 
         x_train = self.model.forward_conv1a(x_train)
-        #print(x_train)
         self.r_train_datasets[0] = RejectionModelDataset(x_train, y_train)
         print(x_train.size())
 
@@ -171,7 +152,6 @@ class NLBN():
         print(x_train.size())
 
         x_train = self.model.forward_max_pool1c(x_train)
-        #self.r_train_datasets[4] = RejectionModelDataset(x_train, y_train)
 
         x_train = self.model.forward_conv2a(x_train)
         self.r_train_datasets[4] = RejectionModelDataset(x_train, y_train)
@@ -182,7 +162,6 @@ class NLBN():
         print(x_train.size())
 
         x_train = self.model.forward_max_pool2c(x_train)
-        #self.r_train_datasets[8] = RejectionModelDataset(x_train, y_train)
 
         x_train = self.model.forward_flatten3a(x_train)
         self.r_train_datasets[8] = RejectionModelDataset(x_train, y_train)
@@ -212,7 +191,6 @@ class NLBN():
         print(x_test.size())
 
         x_test = self.model.forward_max_pool1c(x_test)
-        #self.r_test_datasets[4] = RejectionModelDataset(x_test, y_test)
 
         x_test = self.model.forward_conv2a(x_test)
         self.r_test_datasets[4] = RejectionModelDataset(x_test, y_test)
@@ -223,7 +201,6 @@ class NLBN():
         print(x_test.size())
 
         x_test = self.model.forward_max_pool2c(x_test)
-        #self.r_test_datasets[8] = RejectionModelDataset(x_train, y_test)
 
         x_test = self.model.forward_flatten3a(x_test)
         self.r_test_datasets[8] = RejectionModelDataset(x_test, y_test)
