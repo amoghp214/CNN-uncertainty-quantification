@@ -5,7 +5,10 @@ from r_model_dataset import RejectionModelDataset
 from torch.utils.data import DataLoader
 from model import ImageClassificationModel
 
-
+###
+### Note: some parts of this class can be written cleaner. 
+### This was just a prototype to get the NLBN and Rejection Confidence Variance working.
+###
 
 class NLBN():
     def __init__(self, model: ImageClassificationModel, train_set, test_set, loss_fn, optimizer, model_save_dir):
@@ -24,13 +27,13 @@ class NLBN():
         self.rejection_layer_uncertainties = {}
         self.r_confs = {}
         self.r_thresholds = {
-            0: 0.5, 
-            2: 0.5, 
-            4: 0.5, 
-            6: 0.5, 
-            8: 0.5, 
-            10: 0.5, 
-            12: 0.5
+            0: -1, 
+            2: -1, 
+            4: -1, 
+            6: -1, 
+            8: -1, 
+            10: -1, 
+            12: -1
         }
         self.r_input_sizes = {
             0: 16*61*61, 
@@ -289,7 +292,7 @@ class NLBN():
         
         t = self.model.forward_conv1a(t)
         r[0] = self.r_models[0](t)
-        if (torch.max(r) > self.r_thresholds[0]):
+        if (max(r) > self.r_thresholds[0]):
             r_above_threshold[0] = True
             #r_conf_num[0] += 1
             #for i in range(len(r)):
@@ -297,7 +300,7 @@ class NLBN():
         
         t = self.model.forward_conv1b(t)
         r[2] = self.r_models[2](t)
-        if (torch.max(r) > self.r_thresholds[2]):
+        if (max(r) > self.r_thresholds[2]):
             r_above_threshold[2] = True
             #r_conf_num[2] += 1
             #for i in range(len(r)):
@@ -307,7 +310,7 @@ class NLBN():
         
         t = self.model.forward_conv2a(t)
         r[4] = self.r_models[4](t)
-        if (torch.max(r) > self.r_thresholds[4]):
+        if (max(r) > self.r_thresholds[4]):
             r_above_threshold[4] = True
             #r_conf_num[4] += 1
             #for i in range(len(r)):
@@ -315,7 +318,7 @@ class NLBN():
         
         t = self.model.forward_conv2b(t)
         r[6] = self.r_models[6](t)
-        if (torch.max(r) > self.r_thresholds[6]):
+        if (max(r) > self.r_thresholds[6]):
             r_above_threshold[6] = True
             #r_conf_num[6] += 1
             #for i in range(len(r)):
@@ -325,7 +328,7 @@ class NLBN():
         
         t = self.model.forward_flatten3a(t)
         r[8] = self.r_models[8](t)
-        if (torch.max(r) > self.r_thresholds[8]):
+        if (max(r) > self.r_thresholds[8]):
             r_above_threshold[8] = True
             #r_conf_num[8] += 1
             #for i in range(len(r)):
@@ -333,7 +336,7 @@ class NLBN():
         
         t = self.model.forward_fc4a(t)
         r[10] = self.r_models[10](t)
-        if (torch.max(r) > self.r_thresholds[10]):
+        if (max(r) > self.r_thresholds[10]):
             r_above_threshold[10] = True
             #r_conf_num[10] += 1
             #for i in range(len(r)):
@@ -341,7 +344,7 @@ class NLBN():
         
         t = self.model.forward_fc4b(t)
         r[12] = self.r_models[12](t)
-        if (torch.max(r) > self.r_thresholds[12]):
+        if (max(r) > self.r_thresholds[12]):
             r_above_threshold[12] = True
             #r_conf_num[12] += 1
             #for i in range(len(r)):
@@ -352,39 +355,39 @@ class NLBN():
 
 
         if (r_above_threshold[0]):
-            for i in range(len(t)):
-                self.r_confs[0][i].append([r[0][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[0][i].append([r[0][0][i].tolist(), t[0][i].tolist()])
 
         if (r_above_threshold[2]):
-            for i in range(len(t)):
-                self.r_confs[2][i].append([r[2][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[2][i].append([r[2][0][i].tolist(), t[0][i].tolist()])
 
         if (r_above_threshold[4]):
-            for i in range(len(t)):
-                self.r_confs[4][i].append([r[4][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[4][i].append([r[4][0][i].tolist(), t[0][i].tolist()])
 
         if (r_above_threshold[6]):
-            for i in range(len(t)):
-                self.r_confs[6][i].append([r[6][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[6][i].append([r[6][0][i].tolist(), t[0][i].tolist()])
 
         if (r_above_threshold[8]):
-            for i in range(len(t)):
-                self.r_confs[8][i].append([r[8][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[8][i].append([r[8][0][i].tolist(), t[0][i].tolist()])
 
         if (r_above_threshold[10]):
-            for i in range(len(t)):
-                self.r_confs[10][i].append([r[10][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[10][i].append([r[10][0][i].tolist(), t[0][i].tolist()])
 
         if (r_above_threshold[12]):
-            for i in range(len(t)):
-                self.r_confs[12][i].append([r[12][i], t[i]])
+            for i in range(t.size()[1]):
+                self.r_confs[12][i].append([r[12][0][i].tolist(), t[0][i].tolist()])
 
         return t
     
     def calculate_uncertainty(self):
         # calculate the uncertainty for the rejection layers (variance with respect to y_h)
         r_conf_num = {
-            -1: 0,
+            #-1: 0,
             0: 0,
             2: 0,
             4: 0,
@@ -395,7 +398,7 @@ class NLBN():
         }
 
         self.r_confs = {
-            -1: [[] for _ in range(10)],
+            #-1: [[] for _ in range(10)],
             0: [[] for _ in range(10)],
             2: [[] for _ in range(10)],
             4: [[] for _ in range(10)],
@@ -411,13 +414,32 @@ class NLBN():
             t, _ = data
             self.forward_stochastic(t, r_conf_num)
         
-        variance = [[[0] for _ in range(len(self.r_confs))] for _ in range(len(self.r_confs[0]))]
+        variance = [[[0] for _ in range(len(self.r_confs[0]))] for _ in range(len(self.r_confs))]
+        
+        variance = {
+            0: [[0] for _ in range(len(self.r_confs[0]))],
+            2: [[0] for _ in range(len(self.r_confs[0]))],
+            4: [[0] for _ in range(len(self.r_confs[0]))],
+            6: [[0] for _ in range(len(self.r_confs[0]))],
+            8: [[0] for _ in range(len(self.r_confs[0]))],
+            10: [[0] for _ in range(len(self.r_confs[0]))],
+            12: [[0] for _ in range(len(self.r_confs[0]))]
+        }
 
-        for k, _ in self.r_confs.items():
+        #print("hello")
+        #print(len(self.r_confs[0]), len(self.r_confs[0][0]), len(self.r_confs[0][0][0]))
+
+        for k in self.r_confs.keys():
+            #print("k", str((k)))
+            #print("\n\n")
+            #print(self.r_confs[k])
             for i in range(len(self.r_confs[k])):
+                #0print("i", str(i))
+                #print(len(self.r_confs[k]), len(self.r_confs[k][0]))
+                #print(self.r_confs[k][i][8])
                 variance[k][i] = self.calculate_moving_variance(self.r_confs[k][i])
 
-        
+        return variance
 
 
     def set_r_thresholds(self, thresholds):
