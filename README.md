@@ -12,7 +12,7 @@ To perform uncertainty quantification using the Dropout Ensemble Technique, run:
 
 #### Part 2b
 To perform uncertainty quantification using  Rejection Confidence Variance, run:
-`python perform_dropout_ensemble.py <model_path>`
+`python perform_rcv.py <model_path>`
 
 ##### Note:
 This repository does not include any model state files.
